@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import "./Login.scss";
-import { loginApi } from "../services/UserService";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from '../context/UserContext';
-import { useContext } from 'react';
+import { handleLoginRedux } from "../redux/actions/userActions";
+import { useDispatch, useSelector } from "react-redux";
 
 const Login = () => {
-  const { loginContext } = useContext(UserContext);
+  const disPatch = useDispatch();
 
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
@@ -15,7 +14,8 @@ const Login = () => {
 
   const navigate = useNavigate();
 
-  const [loadingApi, setLoadingApi] = useState(false);
+  const isLoading = useSelector(state => state.user.isLoading);
+  const account = useSelector(state => state.user.account);
 
   useEffect(() => {
     let token = localStorage.getItem("token");
@@ -30,20 +30,7 @@ const Login = () => {
 			return;
 		}
 
-    setLoadingApi(true);
-
-		let res = await loginApi(email.trim(), password);
-    if (res && res.token) {
-      loginContext(email, res.token)
-      navigate("/");
-    } else {
-      // error
-      if (res && res.status === 400) {
-        toast.error(res.data.error);
-      }
-    }
-
-    setLoadingApi(false);
+    disPatch(handleLoginRedux(email, password));
 	};
 
   const handleBack = () => {
@@ -55,6 +42,12 @@ const Login = () => {
       handleLogin();
     }
   }
+
+  useEffect(() => {
+    if (account && account.auth === true) {
+      navigate("/");
+    }
+  },[account])
 
 	return (
 		<div className="login-container col-12 mx-auto">
@@ -105,7 +98,7 @@ const Login = () => {
 				disabled={email && password ? false: true}
 				onClick={() => handleLogin()}
 			>
-        {loadingApi &&
+        {isLoading &&
           <svg className="loading-icon" xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M304 48a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zm0 416a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zM48 304a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm464-48a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zM142.9 437A48 48 0 1 0 75 369.1 48 48 0 1 0 142.9 437zm0-294.2A48 48 0 1 0 75 75a48 48 0 1 0 67.9 67.9zM369.1 437A48 48 0 1 0 437 369.1 48 48 0 1 0 369.1 437z"/></svg>
         }
 				Login
