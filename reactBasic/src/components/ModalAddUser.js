@@ -1,14 +1,25 @@
-import { Modal, Button, Form } from 'react-bootstrap';
+import { Modal, Button } from 'react-bootstrap';
 import { useState } from 'react';
+import { postCreateUser } from '../services/UserService';
+import { toast } from 'react-toastify';
 
 const ModalAddUser = (props) => {
-  const { show, handleClose } = props;
-  const [ name, setName ] = useState("");
-  const [ job, setJob ] = useState("");
+  const { show, handleClose, handleUpdateTable } = props;
+  const [ firstName, setFirstName ] = useState("");
+  const [ lastName, setLastName ] = useState("");
 
-  const handleCreateUser = () => {
-    handleClose();
-    console.log(name,job)
+  const handleCreateUser = async () => {
+    let res = await postCreateUser(firstName, lastName);
+
+    if (res && res.id) {
+      handleClose();
+      setFirstName('');
+      setLastName('');
+      toast.success('Added user successfully!');
+      handleUpdateTable({first_name: firstName, id: res.id, last_name: lastName});
+    } else {
+      toast.error('Added user failed!');
+    }
   }
 
   return (
@@ -19,21 +30,21 @@ const ModalAddUser = (props) => {
       <Modal.Body>
       <form>
         <div className="form-group mb-3">
-          <label>Name:</label>
+          <label>First Name:</label>
           <input
             type="text"
             className="form-control"
-            value={name}
-            onChange={(event) => {setName(event.target.value)}}
+            value={firstName}
+            onChange={(event) => {setFirstName(event.target.value)}}
           />
         </div>
         <div className="form-group mb-3">
-          <label>Job:</label>
+          <label>Last Name:</label>
           <input
             type="text"
             className="form-control"
-            value={job}
-            onChange={(event) => {setJob(event.target.value)}}
+            value={lastName}
+            onChange={(event) => {setLastName(event.target.value)}}
           />
         </div>
       </form>

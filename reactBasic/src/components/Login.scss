@@ -1,0 +1,92 @@
+.login-container {
+  .title {
+    text-align: center;
+    font-size: 24px;
+  }
+  .text {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 5px;
+  }
+  input {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+    height: 40px;
+    border: 0;
+    background: #ededed;
+    color: #494848;
+    padding: 10px;
+    &::placeholder {
+      color: #979797;
+    }
+  }
+  .password-block {
+    position: relative;
+  }
+  .password-icon {
+    position: absolute;
+    top: 50%;
+    margin-top: -14px;
+    right: 10px;
+    cursor: pointer;
+  }
+  .login-button {
+    display: block;
+    width: 100%;
+    background-color: #d0d0d0;
+    border: 0;
+    height: 40px;
+    transition: opacity .25s ease;
+    font-weight: 500;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    &:hover {
+      opacity: .8;
+    }
+    &.active {
+      background-color: #ff3e3e;
+      color: white;
+    }
+    &:disabled,&[disabled=disabled] {
+      cursor: not-allowed;
+      opacity: 1;
+    }
+  }
+  .back {
+    text-align: center;
+    svg {
+      margin-right: 5px;
+      position: relative;
+      top: -1px;
+    }
+  }
+  .back-link {
+    cursor: pointer;
+    transition: opacity .25s ease;
+    &:hover {
+      opacity: .7;
+    }
+  }
+  .loading-icon {
+    position: relative;
+    top: -1px;
+    margin-right: 5px;
+    animation: spinAround 2s infinite linear;
+  }
+}
+
+@media print, (min-width: 768px) {
+  .login-container {
+    max-width: 330px;
+  }
+}
+
+@keyframes spinAround {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
